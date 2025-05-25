@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cron = require("node-cron");
 const DailyCount = require("../models/dailyCount");
+const MonthlyCount = require("../models/monthlyCount");
 
 const fetchRdwData = async () => {
   try {
@@ -12,6 +13,9 @@ const fetchRdwData = async () => {
 
     const now = new Date();
     const dateString = now.toISOString().split("T")[0];
+    const yearMonth = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}`;
 
     await DailyCount.findOneAndUpdate(
       { date: dateString },
@@ -19,12 +23,19 @@ const fetchRdwData = async () => {
       { upsert: true, new: true }
     );
 
+    await MonthlyCount.findOneAndUpdate(
+      { month: yearMonth },
+      { $set: { count: entries.length } },
+      { upsert: true, new: true }
+    );
+
     console.log(`Saved RDW count for ${dateString}: ${entries.length}`);
+    console.log(`Saved RDW count for ${yearMonth}: ${entries.length}`);
   } catch (err) {
     console.error("Error fetching RDW data:", err.message);
   }
 };
 
-// fetchRdwData();
+fetchRdwData();
 
 cron.schedule("0 0 * * *", fetchRdwData);
