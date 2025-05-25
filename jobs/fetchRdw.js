@@ -36,6 +36,6 @@ const fetchRdwData = async () => {
   }
 };
 
-fetchRdwData();
+// fetchRdwData();
 
 cron.schedule("0 0 * * *", fetchRdwData);
