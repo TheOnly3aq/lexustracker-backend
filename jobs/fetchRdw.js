@@ -88,4 +88,5 @@ module.exports = { fetchRdwData };
 
 // fetchRdwData();
 
+
 cron.schedule("0 0 * * *", fetchRdwData);
