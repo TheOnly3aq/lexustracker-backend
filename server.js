@@ -18,5 +18,4 @@ mongoose
 
 app.use("/api/stats", statsRoute);
 
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

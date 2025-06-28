@@ -3,10 +3,13 @@ const cron = require("node-cron");
 const DailyCount = require("../models/dailyCount");
 const MonthlyCount = require("../models/monthlyCount");
 const RdwEntry = require("../models/rdwEntry");
+const DailyDifference = require("../models/dailyDifference");
 
 const fetchRdwData = async () => {
   try {
     console.log("Starting RDW data fetch...");
+
+    const existingKentekenList = await RdwEntry.distinct("kenteken");
 
     const response = await axios.get(
       "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$where=contains(handelsbenaming,'IS250C')&$limit=1000"
@@ -35,6 +38,7 @@ const fetchRdwData = async () => {
 
     let updatedCount = 0;
     let newCount = 0;
+    const addedKentekens = [];
 
     for (const entry of entries) {
       try {
@@ -57,6 +61,7 @@ const fetchRdwData = async () => {
             lastUpdated: new Date(),
           });
           newCount++;
+          addedKentekens.push(entry.kenteken);
         }
       } catch (entryError) {
         console.warn(`Skipped entry ${entry.kenteken}:`, entryError.message);
@@ -70,6 +75,11 @@ const fetchRdwData = async () => {
     );
 
     const currentKentekenList = entries.map((entry) => entry.kenteken);
+
+    const removedKentekens = existingKentekenList.filter(
+      (kenteken) => !currentKentekenList.includes(kenteken)
+    );
+
     const deleteResult = await RdwEntry.deleteMany({
       kenteken: { $nin: currentKentekenList },
     });
@@ -78,6 +88,40 @@ const fetchRdwData = async () => {
       console.log(
         `Removed ${deleteResult.deletedCount} entries that are no longer in the API`
       );
+    }
+
+    const totalChanges = addedKentekens.length + removedKentekens.length;
+
+    if (totalChanges > 0) {
+      await DailyDifference.findOneAndUpdate(
+        { date: dateString },
+        {
+          $set: {
+            added: addedKentekens,
+            removed: removedKentekens,
+            totalChanges: totalChanges,
+          },
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log(
+        `Daily differences for ${dateString}: ${addedKentekens.length} added, ${removedKentekens.length} removed`
+      );
+    } else {
+      await DailyDifference.findOneAndUpdate(
+        { date: dateString },
+        {
+          $set: {
+            added: [],
+            removed: [],
+            totalChanges: 0,
+          },
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log(`No changes detected for ${dateString}`);
     }
   } catch (err) {
     console.error("Error fetching RDW data:", err.message);

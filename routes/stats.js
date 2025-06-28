@@ -3,6 +3,7 @@ const router = express.Router();
 const DailyCount = require("../models/dailyCount");
 const MonthlyCount = require("../models/monthlyCount");
 const RdwEntry = require("../models/rdwEntry");
+const DailyDifference = require("../models/dailyDifference");
 
 router.get("/daily-count", async (req, res) => {
   try {
@@ -131,6 +132,48 @@ router.get("/rdw-stats", async (req, res) => {
   } catch (err) {
     console.error("Error fetching RDW statistics:", err);
     res.status(500).json({ error: "Failed to fetch RDW statistics" });
+  }
+});
+
+router.get("/daily-differences", async (req, res) => {
+  try {
+    res.set({
+      "Cache-Control": "public, max-age=1800",
+    });
+
+    const { date, limit = 30 } = req.query;
+
+    let query = {};
+    if (date) {
+      query.date = date;
+    }
+
+    const data = await DailyDifference.find(query)
+      .sort({ date: -1 })
+      .limit(parseInt(limit))
+      .lean();
+
+    const transformedData = data.map((entry) => ({
+      date: entry.date,
+      changes:
+        entry.totalChanges > 0
+          ? {
+              added: entry.added,
+              removed: entry.removed,
+            }
+          : [],
+      totalChanges: entry.totalChanges,
+      createdAt: entry.createdAt,
+      updatedAt: entry.updatedAt,
+    }));
+
+    res.json({
+      data: transformedData,
+      count: data.length,
+    });
+  } catch (err) {
+    console.error("Error fetching daily differences:", err);
+    res.status(500).json({ error: "Failed to fetch daily differences" });
   }
 });
 
