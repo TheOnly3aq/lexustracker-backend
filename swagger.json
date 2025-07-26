@@ -11,10 +11,6 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5050",
-      "description": "Development server"
-    },
-    {
       "url": "https://lexusapi.karstalens.nl",
       "description": "Production server"
     }
