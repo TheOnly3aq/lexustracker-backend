@@ -18,6 +18,9 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.15.0",
-    "node-cron": "^4.0.7"
+    "node-cron": "^4.0.7",
+    "swagger-ui": "^5.27.0",
+    "swagger-ui-dist": "^5.27.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }
