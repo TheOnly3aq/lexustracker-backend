@@ -23,7 +23,6 @@ const DailyDifferenceSchema = new mongoose.Schema(
   }
 );
 
-
 DailyDifferenceSchema.index({ date: -1 });
 
 module.exports = mongoose.model("DailyDifference", DailyDifferenceSchema);
