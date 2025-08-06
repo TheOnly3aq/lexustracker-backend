@@ -130,6 +130,6 @@ const fetchRdwData = async () => {
 
 module.exports = { fetchRdwData };
 
-// fetchRdwData();
+fetchRdwData();
 
 cron.schedule("0 0 * * *", fetchRdwData);

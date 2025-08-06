@@ -26,6 +26,7 @@ const RdwEntrySchema = new mongoose.Schema(
     aantal_deuren: String,
     aantal_wielen: String,
     lengte: String,
+    maximale_constructiesnelheid: String,
     europese_voertuigcategorie: String,
     plaats_chassisnummer: String,
     technische_max_massa_voertuig: String,
@@ -35,6 +36,7 @@ const RdwEntrySchema = new mongoose.Schema(
     uitvoering: String,
     volgnummer_wijziging_eu_typegoedkeuring: String,
     vermogen_massarijklaar: String,
+    nettomaximumvermogen: String,
     lastUpdated: { type: Date, default: Date.now },
   },
   {
