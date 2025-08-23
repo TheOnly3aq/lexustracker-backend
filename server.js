@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
+const checkApiKey = require("./apiKeyMiddleware"); // <-- add this
 
 const statsRoute = require("./routes/stats");
 require("./jobs/fetchRdw");
@@ -28,6 +29,6 @@ mongoose
     .catch((err) => console.error(err));
 
 
-app.use("/api/:car/stats", statsRoute);
+app.use("/api/:car/stats", checkApiKey, statsRoute);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
