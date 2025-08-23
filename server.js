@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
-const checkApiKey = require("./apiKeyMiddleware"); // <-- add this
+const checkApiKey = require("./apiKeyMiddleware");
 const statsRoute = require("./routes/stats");
 require("./jobs/fetchRdw");
 require("./jobs/fetchRdwIS300H");
