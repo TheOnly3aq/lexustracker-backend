@@ -21,7 +21,7 @@ app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     res.send(
         `User-agent: *
-Disallow: /admin`
+Disallow: /`
     );
 });
 
