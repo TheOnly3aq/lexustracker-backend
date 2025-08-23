@@ -16,8 +16,6 @@ async function connectDB() {
 
     try {
         const safeUri = uri.replace(/:\\S+@/, ":****@");
-        console.log("Connecting to:", safeUri);
-        console.log("URI source:", cliUriArg ? "--uri flag" : (process.env.MONGO_URI ? ".env/MONGO_URI" : "fallback localhost"));
     } catch (_) {
     }
 
@@ -29,7 +27,6 @@ async function connectDB() {
             directConnection: true,
             retryWrites: false,
         });
-        console.log("MongoDB connected.");
     } catch (error) {
         if (error?.code === 'ENOTFOUND') {
             console.error("MongoDB connection error: Hostname not found. Use an IP or fix DNS/VPN (or /etc/hosts).", error);

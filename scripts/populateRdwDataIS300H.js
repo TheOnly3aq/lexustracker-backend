@@ -14,8 +14,6 @@ const connectDB = async () => {
 
         try {
             const safeUri = uri.replace(/:\\S+@/, ":****@");
-            console.log("Connecting to:", safeUri);
-            console.log("URI source:", cliUriArg ? "--uri flag" : (process.env.MONGO_URI ? ".env/MONGO_URI" : "fallback localhost"));
         } catch (_) {
         }
 
