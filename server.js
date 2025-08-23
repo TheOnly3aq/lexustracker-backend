@@ -31,4 +31,4 @@ mongoose
 
 app.use("/api/:car/stats", checkApiKey, statsRoute);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`(!) Server running on port ${PORT}`));
