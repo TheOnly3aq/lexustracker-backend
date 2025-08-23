@@ -6,12 +6,12 @@
     "version": "1.0.0",
     "contact": {
       "name": "API Support",
-      "email": "support@astrode.dev"
+      "email": "info@lexustracker.nl"
     }
   },
   "servers": [
     {
-      "url": "https://lexusapi.karstalens.nl",
+      "url": "https://api.lexustracker.nl",
       "description": "Production server"
     }
   ],
@@ -22,11 +22,28 @@
     }
   ],
   "paths": {
-    "/api/stats/daily-count": {
+    "/api/{car}/stats/daily-count": {
       "get": {
-        "tags": ["Statistics"],
-        "summary": "Get daily vehicle counts",
-        "description": "Retrieves daily count statistics for vehicles in the database",
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get daily vehicle counts for a car segment",
+        "description": "Retrieves daily count statistics for vehicles in the database for the specified car segment (IS250C or IS300H)",
+        "parameters": [
+          {
+            "name": "car",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "IS250C",
+                "IS300H"
+              ]
+            },
+            "description": "Car segment (IS250C or IS300H)"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -41,24 +58,42 @@
               }
             }
           },
+          "400": {
+            "description": "Unsupported car segment"
+          },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Failed to fetch daily stats"
           }
-        }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     },
-    "/api/stats/monthly-count": {
+    "/api/{car}/stats/monthly-count": {
       "get": {
-        "tags": ["Statistics"],
-        "summary": "Get monthly vehicle counts",
-        "description": "Retrieves monthly count statistics for vehicles in the database",
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get monthly vehicle counts for a car segment",
+        "description": "Retrieves monthly count statistics for vehicles in the database for the specified car segment (IS250C or IS300H)",
+        "parameters": [
+          {
+            "name": "car",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "IS250C",
+                "IS300H"
+              ]
+            },
+            "description": "Car segment (IS250C or IS300H)"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -73,73 +108,76 @@
               }
             }
           },
+          "400": {
+            "description": "Unsupported car segment"
+          },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Failed to fetch monthly stats"
           }
-        }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     },
-    "/api/stats/rdw-data": {
+    "/api/{car}/stats/rdw-data": {
       "get": {
-        "tags": ["Statistics"],
-        "summary": "Get RDW vehicle data",
-        "description": "Retrieves vehicle data from RDW with optional search and sorting",
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get RDW vehicle data for a car segment",
+        "description": "Retrieves RDW vehicle data for the specified car segment (IS250C or IS300H). Supports search and sorting via query parameters.",
         "parameters": [
+          {
+            "name": "car",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "IS250C",
+                "IS300H"
+              ]
+            },
+            "description": "Car segment (IS250C or IS300H)"
+          },
           {
             "name": "search",
             "in": "query",
-            "description": "Search term for filtering vehicles (kenteken, merk, handelsbenaming, kleur, inrichting)",
             "required": false,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Search term for kenteken, merk, handelsbenaming, eerste_kleur, or inrichting"
           },
           {
             "name": "sortBy",
             "in": "query",
-            "description": "Field to sort by",
             "required": false,
             "schema": {
-              "type": "string",
-              "default": "kenteken"
-            }
+              "type": "string"
+            },
+            "description": "Field to sort by (default: kenteken)"
           },
           {
             "name": "sortOrder",
             "in": "query",
-            "description": "Sort order (asc or desc)",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "asc"
-            }
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "description": "Sort order (asc or desc, default: asc)"
           }
         ],
         "responses": {
           "200": {
             "description": "Successful response",
-            "headers": {
-              "Cache-Control": {
-                "description": "Caching policy",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "ETag": {
-                "description": "Entity tag for caching",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -153,8 +191,8 @@
                     },
                     "lastUpdated": {
                       "type": "string",
-                      "format": "date-time",
-                      "nullable": true
+                      "nullable": true,
+                      "format": "date-time"
                     },
                     "count": {
                       "type": "integer"
@@ -164,46 +202,54 @@
               }
             }
           },
+          "400": {
+            "description": "Unsupported car segment"
+          },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Failed to fetch RDW data"
           }
-        }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     },
-    "/api/stats/rdw-data/{kenteken}": {
+    "/api/{car}/stats/rdw-data/{kenteken}": {
       "get": {
-        "tags": ["Statistics"],
-        "summary": "Get specific vehicle by license plate",
-        "description": "Retrieves detailed vehicle information by license plate (kenteken)",
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get RDW vehicle entry by kenteken for a car segment",
+        "description": "Retrieves a single RDW vehicle entry by license plate (kenteken) for the specified car segment (IS250C or IS300H)",
         "parameters": [
+          {
+            "name": "car",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "IS250C",
+                "IS300H"
+              ]
+            },
+            "description": "Car segment (IS250C or IS300H)"
+          },
           {
             "name": "kenteken",
             "in": "path",
-            "description": "License plate number (kenteken)",
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "License plate (kenteken) of the vehicle"
           }
         ],
         "responses": {
           "200": {
             "description": "Successful response",
-            "headers": {
-              "Cache-Control": {
-                "description": "Caching policy",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -212,126 +258,28 @@
               }
             }
           },
+          "400": {
+            "description": "Unsupported car segment"
+          },
           "404": {
-            "description": "Vehicle not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Vehicle not found"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Failed to fetch RDW entry"
           }
-        }
-      }
-    },
-    "/api/stats/rdw-stats": {
-      "get": {
-        "tags": ["Statistics"],
-        "summary": "Get RDW statistics",
-        "description": "Retrieves aggregated statistics about vehicles in the database",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "headers": {
-              "Cache-Control": {
-                "description": "Caching policy",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "totalCount": {
-                      "type": "integer"
-                    },
-                    "lastUpdated": {
-                      "type": "string",
-                      "format": "date-time",
-                      "nullable": true
-                    },
-                    "statistics": {
-                      "type": "object",
-                      "properties": {
-                        "colorDistribution": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "type": "string"
-                              },
-                              "count": {
-                                "type": "integer"
-                              }
-                            }
-                          }
-                        },
-                        "yearDistribution": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "type": "string"
-                              },
-                              "count": {
-                                "type": "integer"
-                              }
-                            }
-                          }
-                        },
-                        "bodyTypeDistribution": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "type": "string"
-                              },
-                              "count": {
-                                "type": "integer"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
           }
-        }
+        ]
       }
     },
     "/api/stats/daily-differences": {
       "get": {
-        "tags": ["Statistics"],
+        "tags": [
+          "Statistics"
+        ],
         "summary": "Get daily differences",
         "description": "Retrieves daily changes in vehicle data (added/removed vehicles)",
         "parameters": [
@@ -401,6 +349,14 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "API key required in the x-api-key header"
+      }
+    },
     "schemas": {
       "DailyCount": {
         "type": "object",
@@ -417,7 +373,10 @@
             "description": "Number of vehicles for this date"
           }
         },
-        "required": ["date", "count"]
+        "required": [
+          "date",
+          "count"
+        ]
       },
       "MonthlyCount": {
         "type": "object",
@@ -434,7 +393,10 @@
             "description": "Number of vehicles for this month"
           }
         },
-        "required": ["month", "count"]
+        "required": [
+          "month",
+          "count"
+        ]
       },
       "RdwEntry": {
         "type": "object",
@@ -588,7 +550,9 @@
             "format": "date-time"
           }
         },
-        "required": ["kenteken"]
+        "required": [
+          "kenteken"
+        ]
       },
       "DailyDifference": {
         "type": "object",
@@ -629,7 +593,10 @@
             "format": "date-time"
           }
         },
-        "required": ["date", "totalChanges"]
+        "required": [
+          "date",
+          "totalChanges"
+        ]
       },
       "Error": {
         "type": "object",
@@ -639,7 +606,9 @@
             "description": "Error message"
           }
         },
-        "required": ["error"]
+        "required": [
+          "error"
+        ]
       }
     }
   }
