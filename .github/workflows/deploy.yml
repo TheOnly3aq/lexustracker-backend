@@ -32,8 +32,11 @@ jobs:
           command: c
           cwd: "./"
           files: |
-            *.js
-            *.json
+            server.js
+            apiKeyMiddleware.js
+            package.json
+            package-lock.json
+            swagger.json
             models/
             routes/
             jobs/
