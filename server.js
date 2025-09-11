@@ -10,6 +10,7 @@ require("./jobs/fetchRdwIS300H");
 
 const swaggerDocument = require("./swagger.json");
 
+
 const app = express();
 const PORT = process.env.PORT || 5050;
 app.use(cors());
