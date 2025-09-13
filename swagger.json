@@ -26,7 +26,7 @@
       "get": {
         "tags": ["Statistics"],
         "summary": "Get daily vehicle counts for a car segment",
-        "description": "Retrieves daily count statistics for vehicles in the database for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
+        "description": "Retrieves daily count statistics for vehicles in the database for the IS250C car segment.",
         "parameters": [
           {
             "name": "car",
@@ -36,7 +36,7 @@
               "type": "string",
               "enum": ["IS250C", "IS300H"]
             },
-            "description": "Car segment (IS250C or IS300H)"
+            "description": "Car segment (IS250C)"
           }
         ],
         "responses": {
@@ -56,27 +56,6 @@
           "400": {
             "description": "Unsupported car segment"
           },
-          "503": {
-            "description": "IS300H endpoints temporarily disabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
           "500": {
             "description": "Failed to fetch daily stats"
           }
@@ -92,7 +71,7 @@
       "get": {
         "tags": ["Statistics"],
         "summary": "Get monthly vehicle counts for a car segment",
-        "description": "Retrieves monthly count statistics for vehicles in the database for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
+        "description": "Retrieves monthly count statistics for vehicles in the database for the IS250C car segment.",
         "parameters": [
           {
             "name": "car",
@@ -102,7 +81,7 @@
               "type": "string",
               "enum": ["IS250C", "IS300H"]
             },
-            "description": "Car segment (IS250C or IS300H)"
+            "description": "Car segment (IS250C)"
           }
         ],
         "responses": {
@@ -122,27 +101,6 @@
           "400": {
             "description": "Unsupported car segment"
           },
-          "503": {
-            "description": "IS300H endpoints temporarily disabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
           "500": {
             "description": "Failed to fetch monthly stats"
           }
@@ -158,7 +116,7 @@
       "get": {
         "tags": ["Statistics"],
         "summary": "Get RDW vehicle data for a car segment",
-        "description": "Retrieves RDW vehicle data for the specified car segment. Supports search and sorting via query parameters. Note: IS300H endpoints are temporarily disabled.",
+        "description": "Retrieves RDW vehicle data for the IS250C car segment. Supports search and sorting via query parameters.",
         "parameters": [
           {
             "name": "car",
@@ -168,7 +126,7 @@
               "type": "string",
               "enum": ["IS250C", "IS300H"]
             },
-            "description": "Car segment (IS250C or IS300H)"
+            "description": "Car segment (IS250C)"
           },
           {
             "name": "search",
@@ -229,27 +187,6 @@
           "400": {
             "description": "Unsupported car segment"
           },
-          "503": {
-            "description": "IS300H endpoints temporarily disabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
           "500": {
             "description": "Failed to fetch RDW data"
           }
@@ -265,7 +202,7 @@
       "get": {
         "tags": ["Statistics"],
         "summary": "Get RDW vehicle entry by kenteken for a car segment",
-        "description": "Retrieves a single RDW vehicle entry by license plate (kenteken) for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
+        "description": "Retrieves a single RDW vehicle entry by license plate (kenteken) for the IS250C car segment.",
         "parameters": [
           {
             "name": "car",
@@ -275,7 +212,7 @@
               "type": "string",
               "enum": ["IS250C", "IS300H"]
             },
-            "description": "Car segment (IS250C or IS300H)"
+            "description": "Car segment (IS250C)"
           },
           {
             "name": "kenteken",
@@ -303,27 +240,6 @@
           },
           "404": {
             "description": "Vehicle not found"
-          },
-          "503": {
-            "description": "IS300H endpoints temporarily disabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
           },
           "500": {
             "description": "Failed to fetch RDW entry"

@@ -6,7 +6,6 @@ const swaggerUi = require("swagger-ui-express");
 const checkApiKey = require("./apiKeyMiddleware");
 const statsRoute = require("./routes/stats");
 const { scheduleIS250CJob } = require("./jobs/fetchRdw");
-const { scheduleIS300HJob } = require("./jobs/fetchRdwIS300H");
 
 const swaggerDocument = require("./swagger.json");
 
@@ -36,7 +35,6 @@ const startServer = async () => {
     console.log("MongoDB connected");
 
     // Schedule cron jobs after MongoDB connection is established
-    scheduleIS300HJob();
     scheduleIS250CJob();
 
     app.use("/api/:car/stats", checkApiKey, statsRoute);
