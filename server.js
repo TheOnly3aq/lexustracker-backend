@@ -36,6 +36,10 @@ const startServer = async () => {
     );
     console.log("MongoDB connected");
 
+    // Schedule cron jobs after MongoDB connection is established
+    scheduleIS300HJob();
+    scheduleIS250CJob();
+
     app.use("/api/:car/stats", checkApiKey, statsRoute);
 
     app.listen(PORT, () => console.log(`(!) Server running on port ${PORT}`));
