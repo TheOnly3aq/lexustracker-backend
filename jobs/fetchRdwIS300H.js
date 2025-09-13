@@ -16,6 +16,7 @@ const ensureMongoConnection = async () => {
     serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 120000,
     bufferCommands: false,
+    bufferMaxEntries: 0,
   };
 
   await mongoose.connect(
