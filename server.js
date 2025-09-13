@@ -5,8 +5,6 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const checkApiKey = require("./apiKeyMiddleware");
 const statsRoute = require("./routes/stats");
-require("./jobs/fetchRdw");
-require("./jobs/fetchRdwIS300H");
 
 const swaggerDocument = require("./swagger.json");
 
@@ -34,6 +32,10 @@ const startServer = async () => {
       process.env.MONGO_URI || "mongodb://localhost:27017/lexustracker"
     );
     console.log("MongoDB connected");
+
+    // Import and initialize job files after MongoDB connection
+    require("./jobs/fetchRdw");
+    require("./jobs/fetchRdwIS300H");
 
     app.use("/api/:car/stats", checkApiKey, statsRoute);
 
