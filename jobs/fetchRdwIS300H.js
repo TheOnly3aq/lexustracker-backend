@@ -208,4 +208,15 @@ const fetchRdwDataIS300H = async () => {
 
 module.exports = {fetchRdwDataIS300H};
 
-cron.schedule("0 0 * * *", fetchRdwDataIS300H);
+// Schedule cron job only after MongoDB connection is established
+ensureMongoConnection()
+  .then(() => {
+    console.log("Scheduling IS300H cron job...");
+    cron.schedule("0 0 * * *", fetchRdwDataIS300H);
+  })
+  .catch((err) => {
+    console.error(
+      "Failed to establish MongoDB connection for IS300H cron job:",
+      err
+    );
+  });
