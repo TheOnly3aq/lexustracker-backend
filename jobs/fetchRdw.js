@@ -6,10 +6,24 @@ const MonthlyCount = require("../models/monthlyCount");
 const RdwEntry = require("../models/rdwEntry");
 const DailyDifference = require("../models/dailyDifference");
 
-// MongoDB connection is handled by server.js
+// Ensure MongoDB connection before any operations
+const ensureMongoConnection = async () => {
+  if (mongoose.connection.readyState === 1) return;
+
+  try {
+    await mongoose.connect(
+      process.env.MONGO_URI || "mongodb://localhost:27017/lexustracker"
+    );
+    console.log("MongoDB connected for IS250C job");
+  } catch (err) {
+    console.error("Failed to connect to MongoDB for IS250C job:", err);
+    throw err;
+  }
+};
 
 const fetchRdwData = async () => {
   try {
+    await ensureMongoConnection();
     console.log("Starting RDW data fetch...");
 
     const existingKentekenList = await RdwEntry.distinct("kenteken");
@@ -138,6 +152,15 @@ const fetchRdwData = async () => {
 
 module.exports = { fetchRdwData };
 
-// Schedule cron job immediately since MongoDB connection is already established
-console.log("Scheduling IS250C cron job...");
-cron.schedule("0 0 * * *", fetchRdwData);
+// Schedule cron job only after MongoDB connection is established
+ensureMongoConnection()
+  .then(() => {
+    console.log("Scheduling IS250C cron job...");
+    cron.schedule("0 0 * * *", fetchRdwData);
+  })
+  .catch((err) => {
+    console.error(
+      "Failed to establish MongoDB connection for IS250C cron job:",
+      err
+    );
+  });
