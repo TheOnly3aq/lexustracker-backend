@@ -1,5 +1,8 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+
+mongoose.set("bufferCommands", false);
+
 const axios = require("axios");
 const cron = require("node-cron");
 const DailyCount = require("../models/dailyCountIS300H");
@@ -7,24 +10,77 @@ const MonthlyCount = require("../models/monthlyCountIS300H");
 const RdwEntry = require("../models/rdwEntryIS300H");
 const DailyDifference = require("../models/dailyDifferenceIS300H");
 
-mongoose.set("bufferCommands", false);
+const maskUri = (uri) => {
+    try {
+        return uri.replace(/:\/\/([^:]+):[^@]+@/, "://$1:****@");
+    } catch {
+        return uri;
+    }
+};
+const isDnsOrNoPrimary = (err) => {
+    const s = String(err || "");
+    return (
+        err?.code === "ENOTFOUND" ||
+        /ECONNREFUSED/.test(s) ||
+        /NoPrimary|ReplicaSetNoPrimary/.test(s)
+    );
+};
+
+let connectPromise = null;
+
+const connectWithUri = async (uri) => {
+    if (!uri || typeof uri !== "string" || uri.trim() === "") {
+        throw new Error("MONGO_URI is missing or empty. Set it in your environment or .env file.");
+    }
+
+    const opts = {
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 120000,
+        family: 4,
+        directConnection: true,
+        retryWrites: false
+    };
+
+    return mongoose.connect(uri, opts);
+};
 
 const ensureMongoConnection = async () => {
-  if (mongoose.connection.readyState === 1) return;
+    if (mongoose.connection.readyState === 1) return;
 
-  const mongoOptions = {
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 120000,
-    bufferCommands: false,
-    bufferMaxEntries: 0,
-  };
+    if (!connectPromise) {
+        const cliUriArg = process.argv.find((a) => a.startsWith("--uri="));
+        const primaryUri =
+            (cliUriArg ? cliUriArg.slice("--uri=".length) : process.env.MONGO_URI) ||
+            "mongodb://localhost:27017/lexustracker";
+        const fallbackUri = process.env.MONGO_URI_FALLBACK || process.env.MONGO_URI_LOCAL;
 
-  await mongoose.connect(
-    process.env.MONGO_URI || "mongodb://localhost:27017/lexustracker",
-    mongoOptions
-  );
-  console.log("MongoDB connected for fetchRdwIS300H job");
+        connectPromise = (async () => {
+            try {
+                await connectWithUri(primaryUri);
+                console.log(`MongoDB connected (${maskUri(primaryUri)})`);
+            } catch (err) {
+                if (fallbackUri && isDnsOrNoPrimary(err)) {
+                    console.warn(
+                        `Primary MongoDB URI failed (${maskUri(primaryUri)}): ${err?.code || err?.name || "Error"}. Trying fallback URI...`
+                    );
+                    await connectWithUri(fallbackUri);
+                    console.log(`MongoDB connected via fallback (${maskUri(fallbackUri)})`);
+                } else {
+                    throw err;
+                }
+            }
+        })().catch((e) => {
+            connectPromise = null;
+            throw e;
+        });
+    }
+
+    await connectPromise;
 };
+
+ensureMongoConnection().catch((e) => {
+    console.warn("Initial MongoDB connect attempt did not succeed yet:", e.message || e);
+});
 
 const fetchRdwDataIS300H = async () => {
     try {

@@ -29,26 +29,12 @@ app.get("/swagger.json", (req, res) => {
     res.json(swaggerDocument);
 });
 
-const mongoOptions = {
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 120000,
-    bufferCommands: false, 
-    bufferMaxEntries: 0
-};
-
 mongoose
-  .connect(
-    process.env.MONGO_URI || "mongodb://localhost:27017/lexustracker",
-    mongoOptions
-  )
-  .then(() => {
-    console.log("MongoDB connected");
+    .connect(process.env.MONGO_URI || "mongodb://localhost:27017/lexustracker")
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error(err));
 
-    app.use("/api/:car/stats", checkApiKey, statsRoute);
 
-    app.listen(PORT, () => console.log(`(!) Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    console.error("MongoDB connection failed:", err);
-    process.exit(1);
-  });
+app.use("/api/:car/stats", checkApiKey, statsRoute);
+
+app.listen(PORT, () => console.log(`(!) Server running on port ${PORT}`));
