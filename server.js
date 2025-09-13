@@ -5,11 +5,8 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const checkApiKey = require("./apiKeyMiddleware");
 const statsRoute = require("./routes/stats");
-const { fetchRdwData, scheduleIS250CJob } = require("./jobs/fetchRdw");
-const {
-  fetchRdwDataIS300H,
-  scheduleIS300HJob,
-} = require("./jobs/fetchRdwIS300H");
+const { scheduleIS250CJob } = require("./jobs/fetchRdw");
+const { scheduleIS300HJob } = require("./jobs/fetchRdwIS300H");
 
 const swaggerDocument = require("./swagger.json");
 
@@ -51,7 +48,7 @@ const startServer = async () => {
   }
 };
 
-fetchRdwData();
-fetchRdwDataIS300H();
+// fetchRdwData();
+// fetchRdwDataIS300H();
 
 startServer();
