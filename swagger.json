@@ -24,11 +24,9 @@
   "paths": {
     "/api/{car}/stats/daily-count": {
       "get": {
-        "tags": [
-          "Statistics"
-        ],
+        "tags": ["Statistics"],
         "summary": "Get daily vehicle counts for a car segment",
-        "description": "Retrieves daily count statistics for vehicles in the database for the specified car segment (IS250C or IS300H)",
+        "description": "Retrieves daily count statistics for vehicles in the database for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
         "parameters": [
           {
             "name": "car",
@@ -36,10 +34,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "IS250C",
-                "IS300H"
-              ]
+              "enum": ["IS250C", "IS300H"]
             },
             "description": "Car segment (IS250C or IS300H)"
           }
@@ -61,6 +56,27 @@
           "400": {
             "description": "Unsupported car segment"
           },
+          "503": {
+            "description": "IS300H endpoints temporarily disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Failed to fetch daily stats"
           }
@@ -74,11 +90,9 @@
     },
     "/api/{car}/stats/monthly-count": {
       "get": {
-        "tags": [
-          "Statistics"
-        ],
+        "tags": ["Statistics"],
         "summary": "Get monthly vehicle counts for a car segment",
-        "description": "Retrieves monthly count statistics for vehicles in the database for the specified car segment (IS250C or IS300H)",
+        "description": "Retrieves monthly count statistics for vehicles in the database for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
         "parameters": [
           {
             "name": "car",
@@ -86,10 +100,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "IS250C",
-                "IS300H"
-              ]
+              "enum": ["IS250C", "IS300H"]
             },
             "description": "Car segment (IS250C or IS300H)"
           }
@@ -111,6 +122,27 @@
           "400": {
             "description": "Unsupported car segment"
           },
+          "503": {
+            "description": "IS300H endpoints temporarily disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Failed to fetch monthly stats"
           }
@@ -124,11 +156,9 @@
     },
     "/api/{car}/stats/rdw-data": {
       "get": {
-        "tags": [
-          "Statistics"
-        ],
+        "tags": ["Statistics"],
         "summary": "Get RDW vehicle data for a car segment",
-        "description": "Retrieves RDW vehicle data for the specified car segment (IS250C or IS300H). Supports search and sorting via query parameters.",
+        "description": "Retrieves RDW vehicle data for the specified car segment. Supports search and sorting via query parameters. Note: IS300H endpoints are temporarily disabled.",
         "parameters": [
           {
             "name": "car",
@@ -136,10 +166,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "IS250C",
-                "IS300H"
-              ]
+              "enum": ["IS250C", "IS300H"]
             },
             "description": "Car segment (IS250C or IS300H)"
           },
@@ -167,10 +194,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             },
             "description": "Sort order (asc or desc, default: asc)"
           }
@@ -205,6 +229,27 @@
           "400": {
             "description": "Unsupported car segment"
           },
+          "503": {
+            "description": "IS300H endpoints temporarily disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Failed to fetch RDW data"
           }
@@ -218,11 +263,9 @@
     },
     "/api/{car}/stats/rdw-data/{kenteken}": {
       "get": {
-        "tags": [
-          "Statistics"
-        ],
+        "tags": ["Statistics"],
         "summary": "Get RDW vehicle entry by kenteken for a car segment",
-        "description": "Retrieves a single RDW vehicle entry by license plate (kenteken) for the specified car segment (IS250C or IS300H)",
+        "description": "Retrieves a single RDW vehicle entry by license plate (kenteken) for the specified car segment. Note: IS300H endpoints are temporarily disabled.",
         "parameters": [
           {
             "name": "car",
@@ -230,10 +273,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "IS250C",
-                "IS300H"
-              ]
+              "enum": ["IS250C", "IS300H"]
             },
             "description": "Car segment (IS250C or IS300H)"
           },
@@ -264,6 +304,27 @@
           "404": {
             "description": "Vehicle not found"
           },
+          "503": {
+            "description": "IS300H endpoints temporarily disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Failed to fetch RDW entry"
           }
@@ -277,9 +338,7 @@
     },
     "/api/stats/daily-differences": {
       "get": {
-        "tags": [
-          "Statistics"
-        ],
+        "tags": ["Statistics"],
         "summary": "Get daily differences",
         "description": "Retrieves daily changes in vehicle data (added/removed vehicles)",
         "parameters": [

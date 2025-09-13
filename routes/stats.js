@@ -32,6 +32,18 @@ const getModelsForCar = (car) => {
 };
 
 router.use((req, res, next) => {
+    const car = (req.params.car || "").toUpperCase();
+
+    // Temporarily disable IS300H API endpoints
+    if (car === "IS300H") {
+      return res.status(503).json({
+        error:
+          "IS300H API endpoints are temporarily disabled. Data is still being collected in the background.",
+        message: "Please use IS250C endpoints for now.",
+        status: "service_unavailable",
+      });
+    }
+    
     const models = getModelsForCar(req.params.car);
     if (!models) {
         return res.status(400).json({
